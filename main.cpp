@@ -7,7 +7,6 @@
 #include <cassert>
 
 //good morning
-//good evening
 struct Point {
     int x, y;
 	Point() : Point(0, 0) {}
