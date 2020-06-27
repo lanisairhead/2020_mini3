@@ -342,40 +342,64 @@ int find_heur(Point p) {
     OthelloBoard curboard;
     curboard.board = board_orgi;
     curboard.cur_player = player;
-    if (is_corner(p))
-        curheur += 2000;
-    else if (is_edge(p))
-        curheur += 1500;
-    else if (is_notgoodcorner(p))
-        curheur += 50;
-    else if (is_deadedge(p))
-        curheur += 100;
-    else if (is_goodcorner(p))
-        curheur += 200;
-    else if (is_notgoodedge(p))
-        curheur += 120;
-    else if (is_goodedge(p))
-        curheur += 500;
 
     if (curboard.put_disc(p)) {
         std::vector<Point> curvalid = curboard.get_valid_spots();
-        for (int i = 0; i < (int)curvalid.size(); i++) {
-            if (is_corner(curvalid[i]))
-                curheur -= 2000;
-            else if (is_edge(curvalid[i]))
-                curheur -= 1500;
-            else if (is_notgoodcorner(curvalid[i]))
-                curheur -= 50;
-            else if (is_deadedge(curvalid[i]))
-                curheur -= 100;
-            else if (is_goodcorner(curvalid[i]))
-                curheur -= 200;
-            else if (is_notgoodedge(curvalid[i]))
-                curheur -= 120;
-            else if (is_goodedge(curvalid[i]))
-                curheur -= 500;
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (curboard.encode_spot(i, j) != curboard.encode_player(player)) {
+                    Point curp(i, j);
+                    if (is_corner(curp))
+                        curheur -= 20000;
+                    else if (is_edge(curp))
+                        curheur -= 1500;
+                    else if (is_notgoodcorner(curp))
+                        curheur -= 50;
+                    else if (is_deadedge(curp))
+                        curheur -= 100;
+                    else if (is_goodcorner(curp))
+                        curheur -= 600;
+                    else if (is_notgoodedge(curp))
+                        curheur -= 120;
+                    else if (is_goodedge(curp))
+                        curheur -= 1000;
+                }
+                else if (curboard.encode_spot(i, j) == curboard.encode_player(player)) {
+                    Point curp(i, j);
+                    if (is_corner(curp))
+                        curheur += 20000;
+                    else if (is_edge(curp))
+                        curheur += 1500;
+                    else if (is_notgoodcorner(curp))
+                        curheur += 50;
+                    else if (is_deadedge(curp))
+                        curheur += 100;
+                    else if (is_goodcorner(curp))
+                        curheur += 200;
+                    else if (is_notgoodedge(curp))
+                        curheur += 120;
+                    else if (is_goodedge(curp))
+                        curheur += 500;
+                }
+            }
         }
-        curheur -= curvalid.size() * 10;
+        //for (int i = 0; i < (int)curvalid.size(); i++) {
+        //    if (is_corner(curvalid[i]))
+        //        curheur -= 20000;
+        //    else if (is_edge(curvalid[i]))
+        //        curheur -= 1500;
+        //    else if (is_notgoodcorner(curvalid[i]))
+        //        curheur -= 50;
+        //    else if (is_deadedge(curvalid[i]))
+        //        curheur -= 100;
+        //    else if (is_goodcorner(curvalid[i]))
+        //        curheur -= 600;
+        //    else if (is_notgoodedge(curvalid[i]))
+        //        curheur -= 120;
+        //    else if (is_goodedge(curvalid[i]))
+        //        curheur -= 1000;
+        //}
+        //curheur -= curvalid.size() * 10;
         return curheur;
     }
     else return -10000;
