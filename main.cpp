@@ -6,23 +6,22 @@
 #include <vector>
 #include <cassert>
 
-//good morning
 struct Point {
     int x, y;
-	Point() : Point(0, 0) {}
-	Point(float x, float y) : x(x), y(y) {}
-	bool operator==(const Point& rhs) const {
-		return x == rhs.x && y == rhs.y;
-	}
-	bool operator!=(const Point& rhs) const {
-		return !operator==(rhs);
-	}
-	Point operator+(const Point& rhs) const {
-		return Point(x + rhs.x, y + rhs.y);
-	}
-	Point operator-(const Point& rhs) const {
-		return Point(x - rhs.x, y - rhs.y);
-	}
+    Point() : Point(0, 0) {}
+    Point(float x, float y) : x(x), y(y) {}
+    bool operator==(const Point& rhs) const {
+        return x == rhs.x && y == rhs.y;
+    }
+    bool operator!=(const Point& rhs) const {
+        return !operator==(rhs);
+    }
+    Point operator+(const Point& rhs) const {
+        return Point(x + rhs.x, y + rhs.y);
+    }
+    Point operator-(const Point& rhs) const {
+        return Point(x - rhs.x, y - rhs.y);
+    }
 };
 
 class OthelloBoard {
@@ -33,11 +32,11 @@ public:
         WHITE = 2
     };
     static const int SIZE = 8;
-    const std::array<Point, 8> directions{{
+    const std::array<Point, 8> directions{ {
         Point(-1, -1), Point(-1, 0), Point(-1, 1),
         Point(0, -1), /*{0, 0}, */Point(0, 1),
         Point(1, -1), Point(1, 0), Point(1, 1)
-    }};
+    } };
     std::array<std::array<int, SIZE>, SIZE> board;
     std::vector<Point> next_valid_spots;
     std::array<int, 3> disc_count;
@@ -67,7 +66,7 @@ private:
     bool is_spot_valid(Point center) const {
         if (get_disc(center) != EMPTY)
             return false;
-        for (Point dir: directions) {
+        for (Point dir : directions) {
             // Move along the direction while testing.
             Point p = center + dir;
             if (!is_disc_at(p, get_next_player(cur_player)))
@@ -82,16 +81,16 @@ private:
         return false;
     }
     void flip_discs(Point center) {
-        for (Point dir: directions) {
+        for (Point dir : directions) {
             // Move along the direction while testing.
             Point p = center + dir;
             if (!is_disc_at(p, get_next_player(cur_player)))
                 continue;
-            std::vector<Point> discs({p});
+            std::vector<Point> discs({ p });
             p = p + dir;
             while (is_spot_on_board(p) && get_disc(p) != EMPTY) {
                 if (is_disc_at(p, cur_player)) {
-                    for (Point s: discs) {
+                    for (Point s : discs) {
                         set_disc(s, cur_player);
                     }
                     disc_count[cur_player] += discs.size();
@@ -116,7 +115,7 @@ public:
         board[3][4] = board[4][3] = BLACK;
         board[3][3] = board[4][4] = WHITE;
         cur_player = BLACK;
-        disc_count[EMPTY] = 8*8-4;
+        disc_count[EMPTY] = 8 * 8 - 4;
         disc_count[BLACK] = 2;
         disc_count[WHITE] = 2;
         next_valid_spots = get_valid_spots();
@@ -137,7 +136,7 @@ public:
         return valid_spots;
     }
     bool put_disc(Point p) {
-        if(!is_spot_valid(p)) {
+        if (!is_spot_valid(p)) {
             winner = get_next_player(cur_player);
             done = true;
             return false;
@@ -176,22 +175,24 @@ public:
         if (board[x][y] == WHITE) return "X";
         return " ";
     }
-    std::string encode_output(bool fail=false) {
+    std::string encode_output(bool fail = false) {
         int i, j;
         std::stringstream ss;
-        ss << "Timestep #" << (8*8-4-disc_count[EMPTY]+1) << "\n";
+        ss << "Timestep #" << (8 * 8 - 4 - disc_count[EMPTY] + 1) << "\n";
         ss << "O: " << disc_count[BLACK] << "; X: " << disc_count[WHITE] << "\n";
         if (fail) {
             ss << "Winner is " << encode_player(winner) << " (Opponent performed invalid move)\n";
-        } else if (next_valid_spots.size() > 0) {
+        }
+        else if (next_valid_spots.size() > 0) {
             ss << encode_player(cur_player) << "'s turn\n";
-        } else {
+        }
+        else {
             ss << "Winner is " << encode_player(winner) << "\n";
         }
         ss << "+---------------+\n";
         for (i = 0; i < SIZE; i++) {
             ss << "|";
-            for (j = 0; j < SIZE-1; j++) {
+            for (j = 0; j < SIZE - 1; j++) {
                 ss << encode_spot(i, j) << " ";
             }
             ss << encode_spot(i, j) << "|\n";
@@ -215,7 +216,7 @@ public:
         std::stringstream ss;
         ss << cur_player << "\n";
         for (i = 0; i < SIZE; i++) {
-            for (j = 0; j < SIZE-1; j++) {
+            for (j = 0; j < SIZE - 1; j++) {
                 ss << board[i][j] << " ";
             }
             ss << board[i][j] << "\n";
@@ -238,7 +239,7 @@ const int timeout = 1;
 void launch_executable(std::string filename) {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     std::string command = "start /min " + filename + " " + file_state + " " + file_action;
-    std::string kill = "timeout /t " + std::to_string(timeout) + " > NUL && taskkill /im " + filename + " > NUL";
+    std::string kill = "timeout /t " + std::to_string(timeout) + " > NUL && taskkill /im " + filename + " > NUL 2>&1";
     system(command.c_str());
     system(kill.c_str());
 #elif __linux__
