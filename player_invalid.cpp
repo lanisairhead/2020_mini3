@@ -11,14 +11,14 @@ struct Point {
 
 int player;
 const int SIZE = 8;
-std::array<std::array<int, SIZE>, SIZE> board;
-std::vector<Point> next_valid_spots;
+std::array<std::array<int, SIZE>, SIZE> board_orgi;
+std::vector<Point> next_valid_spots_orgi;
 
 void read_board(std::ifstream& fin) {
     fin >> player;
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
-            fin >> board[i][j];
+            fin >> board_orgi[i][j];
         }
     }
 }
@@ -29,7 +29,7 @@ void read_valid_spots(std::ifstream& fin) {
     int x, y;
     for (int i = 0; i < n_valid_spots; i++) {
         fin >> x >> y;
-        next_valid_spots.push_back({x, y});
+        next_valid_spots_orgi.push_back({x, y});
     }
 }
 
